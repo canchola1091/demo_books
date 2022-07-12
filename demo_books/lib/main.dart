@@ -1,4 +1,6 @@
+import 'package:demo_books/src/pages/books/books_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 void main() => runApp(const MyApp());
 
@@ -7,18 +9,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Material App Bar'),
-        ),
-        body: Center(
-          child: Container(
-            child: Text('Hello World'),
-          ),
-        ),
-      ),
+    return const GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Demo Books',
+      home: BooksPage()
     );
   }
 }
