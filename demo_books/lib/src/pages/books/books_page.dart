@@ -1,38 +1,65 @@
 
-import 'dart:convert';
-
+import 'package:demo_books/src/controllers/books_controller.dart';
+import 'package:demo_books/src/widgets/search/books_search.dart';
+import 'package:demo_books/src/widgets/text/custom_text.dart';
+import 'package:demo_books/src/widgets/textfields/custom_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/route_manager.dart';
 
-class BooksPage extends StatefulWidget {
+
+class BooksPage extends StatelessWidget {
   const BooksPage({Key? key}) : super(key: key);
 
   @override
-  State<BooksPage> createState() => _BooksPageState();
-}
-
-class _BooksPageState extends State<BooksPage> {
-
-  String _title = 'title';
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: _fab(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return GetBuilder<BooksController>(
+      init: BooksController(),
+      id: 'books',
+      builder: (_) => Scaffold(
+        appBar: AppBar(),
+        floatingActionButton: _fab(),
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
+
             MaterialButton(
               color: Colors.blue,
-              child: const Text('Get Books!!'),
-              onPressed: () => serviceLogin('Lord')
+              child: const Text('Buscar Libros'),
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: BooksSearchDelegate('Buscar', _.gxListBooksModel)
+                );
+              }
             ),
-            const SizedBox(height: 50.0),
-            Text(_title),
+
             const SizedBox(height: 20.0),
-            _inputText()
+
+            MaterialButton(
+              color: Colors.blue,
+              child: const Text('Get books!!!'),
+              onPressed: () =>_.gxSearchBooks('Batman')
+            ),
+
+             _inputText(),
+
+            (_.gxIsloading)
+            ? const Center(child: CircularProgressIndicator())
+            : Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _.gxListBooksModel.length,
+                itemBuilder: ( context, int index) {
+                  return CustomText(
+                    fTxt: _.gxListBooksModel[index].title!,
+                    fSize: 19.0,
+                    fColor: Colors.blue,
+                  );
+                }
+              ),
+            ),
+
           ]
         )
       )
@@ -41,54 +68,23 @@ class _BooksPageState extends State<BooksPage> {
 
   Widget _fab() {
     return FloatingActionButton(
-      child: Icon(Icons.people),
+      child: const Icon(Icons.people),
       tooltip: 'Formulario',
-      onPressed: () => print('Formulario'), 
+      onPressed: () => Get.toNamed('/user_data_page')
     );
   }
 
   Widget _inputText() {
-    return TextFormField(
-      onChanged: (value) {
-        serviceLogin(value);
-      },
+    return GetBuilder<BooksController>(
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: CustomTextField(
+           textLabel: 'Buscar',
+          fieldController: _.gxBookCtrl,
+          onChanged: (value) => _.gxSearchBooks(value)
+        )
+      ),
     );
-  }
-
-  Future<bool> serviceLogin(String value) async {
-    const String _host = 'openlibrary.org';
-    final Map<String, dynamic> _params = {"q": value};
-    final _url = Uri.https(_host, 'search.json', _params);
-    // final _url = Uri.parse('https://openlibrary.org/search.json?q=alan poe');
-    const _timeOut = Duration(seconds: 30);
-    try {
-      final _resp = await http.get( 
-        _url,
-      ).timeout(_timeOut);
-
-      print('--> Resp: ${_resp.body}');
-      print('--> Status: ${_resp.statusCode}');
-
-      if(_resp.statusCode == 200) {
-        final Map<String, dynamic> _respDecode = jsonDecode(_resp.body);
-        setState(() {
-          _title = _respDecode["docs"][0]["title"];
-        });
-        print('--> TODO BIEN');
-        return true;
-      }else if(_resp.statusCode == 401) {
-        print('--> TODO MAL');
-        return false;
-      }else{
-        // SimpleAlert().cAlert('Upss!!', 'Ocurrio un error, intente nuevamente');
-        print('Ocurrio un error, intente nuevamente');
-        return false;
-      }
-    } catch (e) {
-      // SimpleAlert().cAlert('Upss!!', 'Algo salio mal $e');
-      print('Algo salio mal $e');
-      return false;
-    }
   }
 
 }
