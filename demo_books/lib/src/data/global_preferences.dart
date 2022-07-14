@@ -41,7 +41,7 @@ class GlobalPreferences {
   String? get userGender => _globalPreferences.getString('userGender');
   set userGender(String? value) => _globalPreferences.setString('userGender', value ?? '');
 
-  // // LOGIN
-  // bool get isSession => _globalPreferences.getBool('isSession') ?? false;
-  // set isSession(bool value) => _globalPreferences.setBool('isSession', value);
+  // DATA GUARDADA
+  bool get hasDataUser => _globalPreferences.getBool('hasDataUser') ?? false;
+  set hasDataUser(bool value) => _globalPreferences.setBool('hasDataUser', value);
 } 

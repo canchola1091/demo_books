@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-// import 'package:url_launcher/url_launcher.dart';
 
 //==========================================================
 /// DEVUELVE PORCIENTO DE ANCHO DE LA PANTALLA
@@ -106,6 +105,10 @@ void msgwarn( msg ) => print('🚧 ' + msg.toString() +' 🚧');
 //==========================================================
 void msgerror( msg ) => print('🛑 '+ msg.toString() + ' 🛑');
 
+//==========================================================
+/// MUESTRA UN CIRCULARPROGRES EN UN DIALOG MIENTRAS SE
+/// CONSUME ALGUN ENDPOINT
+//==========================================================
 Future<dynamic> cLoading() {
   return Get.dialog(
     WillPopScope(
@@ -119,17 +122,7 @@ Future<dynamic> cLoading() {
   );
 }
 
-// Future<dynamic> cLoadingCircle() {
-//   return Get.dialog(
-//     WillPopScope(
-//       onWillPop: () async => false,
-//       child: Center(
-//         child: Image.asset('assets/commons/loading-photo.gif', width: 120.0),
-//       )
-//     ),
-//     barrierDismissible: false
-//   );
-// }
+
 
 //==========================================================
 /// FORMATO PARA LA HORA, RECIBE UN DATETIME Y DEVUELVE => dd/mm/yy
@@ -139,6 +132,4 @@ String dateFormat(DateTime dateTime) {
   dateStrFormat = DateFormat('yMd', 'es_ES').format(dateTime);
   return dateStrFormat;
 }
-
-// Future<void> launchUrl(String url) async => await launch(url);
 

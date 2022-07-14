@@ -1,6 +1,7 @@
 
 import 'package:demo_books/src/data/global_preferences.dart';
-import 'package:demo_books/src/pages/user/view_user_data.dart';
+import 'package:demo_books/src/pages/user/view_user_data_page.dart';
+import 'package:demo_books/src/widgets/alerts/alert_logout.dart';
 import 'package:demo_books/src/widgets/alerts/snackbar_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,8 @@ class UserDataController extends GetxController {
   final TextEditingController _userEmailCtrl       = TextEditingController();
   final TextEditingController _userDateOfBirthCtrl = TextEditingController();
   final TextEditingController _userGenderCtrl      = TextEditingController();
-  late int _userAge;
+  int _userAge = 0;
+  bool _hasDate = false;
 
   //? GETTERS
   GlobalPreferences get gxGlobalPrefs             => _globalPreferences;
@@ -28,6 +30,7 @@ class UserDataController extends GetxController {
   TextEditingController get gxUserDateOfBirthCtrl => _userDateOfBirthCtrl;
   TextEditingController get gxUserGenderCtrl      => _userGenderCtrl;
   int get gxUserAge => _userAge;
+  bool get gxhasDate => _hasDate;
 
   @override
   void onClose() {
@@ -53,18 +56,14 @@ class UserDataController extends GetxController {
       _globalPreferences.userPhone       = _userPhoneCtrl.text.trim();
       _globalPreferences.userEmail       = _userEmailCtrl.text.trim();
       _globalPreferences.userDateOfBirth = _userDateOfBirthCtrl.text.trim();
+      _globalPreferences.userAge         = _userAge;
       _globalPreferences.userGender      = _userGenderCtrl.text.trim();
+      _globalPreferences.hasDataUser     = true;
       Get.offAll( 
         () => const ViewUserDataPage(),
         transition: Transition.native,
-        duration: const Duration(milliseconds: 600)
+        duration: const Duration(milliseconds: 700)
       );
-      _userNameCtrl.clear();
-      _userLastNameCtrl.clear();
-      _userPhoneCtrl.clear();
-      _userEmailCtrl.clear();
-      _userDateOfBirthCtrl.clear();
-      _userGenderCtrl.clear();
       SnackBarAlert.cSnackBar(Icons.check, 'Datos guardado con exito');
     }
   }
@@ -81,18 +80,50 @@ class UserDataController extends GetxController {
       context: Get.context!, 
       initialDate: _initialDate, 
       firstDate: _firstDate,
-      lastDate: _initialDate
+      lastDate: _initialDate,
+      locale: const Locale('es', 'ES'),
     );
 
     if(_selectedDate != null) {
-      _userDateOfBirthCtrl.text = utils.dateFormat(_selectedDate);
       _userAge = _initialDate.year - _selectedDate.year;
-      print('--> Edad de usuario: $_userAge');
+      _userDateOfBirthCtrl.text = utils.dateFormat(_selectedDate);
+      _hasDate = true;
+      update(['form']);
     } 
 
   }
 
-  void backToBooksPage() {
-    Get.offAllNamed('/books_page');
+  //==========================================================
+  /// MUESTRA LA ALERTA PARA PREGUNTAR SI DESEA BORRAR LOS 
+  /// DATOS DE USUARIO
+  //==========================================================
+  void showAlertDeleteData() {
+    Get.dialog(
+      AlertDelete(
+        fnDone: () {
+          _globalPreferences.userName        = null;
+          _globalPreferences.userLastName    = null;
+          _globalPreferences.userPhone       = null;
+          _globalPreferences.userEmail       = null;
+          _globalPreferences.userDateOfBirth = null;
+          _globalPreferences.userAge         = null;
+          _globalPreferences.userGender      = null;
+          _globalPreferences.hasDataUser     = false;
+          backToHomePage();
+        }, 
+        fnCancel: () => Get.back()
+      ),
+      barrierDismissible: false
+    );
   }
+
+  //****************NAVEGACIONES********************************
+  
+  //==========================================================
+  /// NAVEGA DE REGRESO HACIA HOMEPAGE
+  //==========================================================
+  void backToHomePage() => Get.offAllNamed('/home_page');
+
+  //************************************************************
+
 }

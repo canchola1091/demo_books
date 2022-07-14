@@ -8,19 +8,20 @@ class SnackBarAlert {
 
   static void cSnackBar(IconData _icon, String _txtSnack) {
     Get.rawSnackbar(
-      backgroundColor: th.snackBarColor,
+      backgroundColor: th.primaryColor,
       snackStyle: SnackStyle.GROUNDED,
       messageText: Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(_icon, color: Colors.white),
+            Icon(_icon, color: Colors.white, size: 35.0),
             const SizedBox(width: 5.0),
             Flexible(
               child: CustomText(
                 fTxt: _txtSnack, 
-                fSize: 13.0,
-                fAlign: TextAlign.justify
+                fSize: 17.0,
+                fAlign: TextAlign.justify,
+                fColor: Colors.white,
               )
             )
           ]

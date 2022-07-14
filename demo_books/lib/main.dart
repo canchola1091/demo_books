@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       locale: const Locale('es', 'ES'),
       theme: theme,
       title: 'Demo Books',
-      initialRoute: '/books_page',
+      initialRoute: '/home_page',
       getPages: Routes.routes,
     );
   }

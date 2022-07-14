@@ -11,16 +11,21 @@ import 'package:get/get.dart';
 import 'package:demo_books/src/theme/theme.dart' as th;
 import 'package:demo_books/src/utils/utils.dart' as utils;
 
-class UserDataPage extends StatelessWidget {
-  const UserDataPage({Key? key}) : super(key: key);
+class FormUserDataPage extends StatelessWidget {
+  const FormUserDataPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // TOCAR CUALQUIER PARTE DE LA PANTALLA PARA QUE SE OCULTE EL TECLADO
       onTap:() => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: const CustomText(
+            fTxt: 'Formulario',
+            fSize: 18.0,
+          ),
+          centerTitle: true,
+        ),
         body: _body()
        )
     );
@@ -29,6 +34,7 @@ class UserDataPage extends StatelessWidget {
   Widget _body() {
     return GetBuilder<UserDataController>(
       init: UserDataController(),
+      id: 'form',
       builder: (_) => SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -41,7 +47,8 @@ class UserDataPage extends StatelessWidget {
               _inputUserLastName(_.gxUserLastNameCtrl),
               _inputUserPhone(_.gxUserPhoneCtrl),
               _inputUserEmail(_.gxUserEmailCtrl),
-              _inputUserDateOfBirht(_.gxUserDateOfBirthCtrl, _.selectedDateOfBirth),             
+              _inputUserDateOfBirht(_.gxUserDateOfBirthCtrl, _.selectedDateOfBirth),
+              _userAge(_.gxUserAge, _.gxhasDate),
               _inputUserGender(_.gxUserGenderCtrl),
               _formButon(_.saveDataUser)
             ]
@@ -119,6 +126,21 @@ class UserDataPage extends StatelessWidget {
     );
   }
 
+  Widget _userAge(int _userAge, bool _hasDate) {
+    return AnimatedCrossFade(
+      firstChild: Padding(
+        padding: const EdgeInsets.only(top: 30.0),
+        child: CustomText(
+        fTxt: 'Edad: $_userAge',
+        fSize: 20.0
+    ),
+      ),
+      secondChild: const SizedBox.shrink(),
+      duration: const Duration(milliseconds: 300),
+      crossFadeState: (_hasDate) ? CrossFadeState.showFirst : CrossFadeState.showSecond
+    );
+  }
+
   Widget _inputUserGender(TextEditingController _userGenderCtrl) {
     return Padding(
       padding: const EdgeInsets.only(top: 30.0),
@@ -139,13 +161,14 @@ class UserDataPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30.0),
       child: SizedBox(
-        width: utils.porcientoW(Get.context, 50.0),
+        width: utils.porcientoW(Get.context, 55.0),
         child: CustomButton(
-          bgColor: th.secondaryColor,
+          bgColor: th.primaryColor,
           splashColor: th.primaryColor.withOpacity(0.6),
           childWidget: const CustomText(
             fTxt: 'Guardar',
-            fSize: 17.0
+            fSize: 17.0,
+             fColor: Colors.white,
           ),
           btnFunction: _saveDataUser
         )

@@ -25,6 +25,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validation;
   final void Function()? onClick;
   final void Function(String)? onChanged;
+  final void Function(String)? onSubmit;
 
   const CustomTextField({
     Key? key,
@@ -47,7 +48,8 @@ class CustomTextField extends StatelessWidget {
     this.isOnclick = false,
     this.validation,
     this.onClick,
-    this.onChanged, 
+    this.onChanged,
+    this.onSubmit
   }): super(key: key);
 
   @override
@@ -132,6 +134,7 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxCaracteres,
       textAlign: txtAlign,
       onChanged: onChanged,
+      onFieldSubmitted: onSubmit,
       style: TextStyle( color: th.subTitleColor )
     );
   }
